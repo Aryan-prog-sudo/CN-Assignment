@@ -96,6 +96,20 @@ def HandleClient(ClientSocket, ClientAddress):
             SendCommand(ClientSocket, f"{RESP_OK} UPLOAD {FileName}")
             print(f"User {UserName} uploaded file: {FileName} ({FileSize} bytes)")
             continue
+        Parts = Line.split(' ', 1)
+        if len(Parts)==2 and Parts[0]==CMD_DOWNLOAD:
+            FileName = Parts[1]
+            UserStorageDir = os.path.join(STORAGE_DIR, UserName)
+            FilePath = os.path.join(UserStorageDir, FileName)
+            if not os.path.isfile(FilePath):
+                SendCommand(ClientSocket, f"{RESP_ERR} {ERR_FILE_NOT_FOUND} file not found")
+                continue
+            FileSize = GetFileSize(FilePath)
+            SendCommand(ClientSocket, f"{RESP_OK} DOWNLOAD {FileName} {FileSize}")
+            SendFileData(ClientSocket, FilePath)
+            print(f"User {UserName} downloaded file: {FileName} ({FileSize} bytes)")
+            continue
+        
 
 
 
