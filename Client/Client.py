@@ -1,5 +1,3 @@
-#To Review: After the client sends LOGOUT it immediately closes with recieving the severs OK LOGOUT response
-
 import socket
 import threading
 import os
@@ -17,6 +15,9 @@ def ReceiveMessages(ClientSocket):
 
         if Message.startswith(RESP_OK):
             Parts = Message.split(' ', 3)
+            if len(Parts)==2 and Parts[1]==CMD_LOGOUT:
+                print(f"\nServer Response: {Message}")
+                return
             if len(Parts)==4 and Parts[1]==CMD_DOWNLOAD:
                 FileName = Parts[2]
                 try:
@@ -73,7 +74,7 @@ def StartClient():
         ClientSocket.close()
         return
     print(f"Server response: {Response}")
-    ReceiverThread = threading.Thread(target=ReceiveMessages, args=(ClientSocket,), daemon=True)
+    ReceiverThread = threading.Thread(target=ReceiveMessages, args=(ClientSocket,))
     ReceiverThread.start()
     while True:
         Command = input(">")
@@ -110,6 +111,8 @@ def StartClient():
 
         if Command==CMD_LOGOUT:
             break
+    if Command == CMD_LOGOUT:
+        ReceiverThread.join()
     ClientSocket.close()
 
 

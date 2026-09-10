@@ -30,10 +30,13 @@ def SendCommand(Socket, Command):
 def ReceiveCommand(Socket):
     Data = bytearray()
     while True:
-        Chunk = Socket.recv(1)
+        try:
+            Chunk = Socket.recv(1)
+        except OSError:
+            return None
         if not Chunk:
             return None
-        if Chunk == b'\n':
+        if Chunk==b'\n':
             break
         Data.extend(Chunk)
     return Data.decode(ENCODING)
