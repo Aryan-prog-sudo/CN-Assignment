@@ -1,3 +1,5 @@
+#This is to measure the average RTT between many users but message is send from user to himself
+
 import sys
 import socket
 import time
