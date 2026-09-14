@@ -1,6 +1,5 @@
 # CN-Assignment
 
-
 ## Running
 
 Run all commands from the repository root so the `Common` package resolves
